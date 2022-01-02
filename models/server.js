@@ -1,13 +1,12 @@
 const express = require("express");
 const cors = require("cors");
 
-
 class Server {
   constructor() {
     this.app = express();
     this.port = process.env.PORT || 8080;
     this.path = {
-      
+      auth: "/api/auth",
     };
 
     //base de datos
@@ -18,8 +17,7 @@ class Server {
     this.routes();
   }
 
-  async connectionDB() {
-  }
+  async connectionDB() {}
 
   middlewares() {
     //cors
@@ -33,7 +31,7 @@ class Server {
   }
 
   routes() {
-
+    this.app.use(this.path.auth, require("../routes/auth"));
   }
 
   listen() {

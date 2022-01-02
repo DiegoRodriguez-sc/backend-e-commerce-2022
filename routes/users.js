@@ -2,11 +2,11 @@ const { Router } = require("express");
 const { check } = require("express-validator");
 
 const {
-  getUsers,
   postUser,
-  putUser,
   deleteUser,
-} = require("../controllers/users.controller");
+  putUser,
+  getUsers,
+} = require("../controller/users.controller");
 const { validateData } = require("../middlewares/validateData");
 const { emailExists, idUserExists } = require("../helpers/db_validators");
 const { validateJwt } = require("../middlewares/validateJwt");
@@ -16,7 +16,6 @@ const router = Router();
 
 //public
 router.get("/", getUsers);
-
 
 //private
 router.post(
@@ -31,7 +30,7 @@ router.post(
       "password",
       "La contraseña tiene que tener 5 caracteres como minimo"
     ).isLength({ min: 5 }),
-    check("rol","No es un rol válido").isIn("ADMIN_ROL","USER_ROLE"),
+    check("rol", "No es un rol válido").isIn("ADMIN_ROL", "USER_ROLE"),
     validateData,
   ],
   postUser

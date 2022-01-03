@@ -8,6 +8,7 @@ class Server {
     this.port = process.env.PORT || 8080;
     this.path = {
       auth: "/api/auth",
+      users: "/api/users",
     };
 
     //base de datos
@@ -35,6 +36,7 @@ class Server {
 
   routes() {
     this.app.use(this.path.auth, require("../routes/auth"));
+    this.app.use(this.path.users, require("../routes/users"));
   }
 
   listen() {

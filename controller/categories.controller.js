@@ -7,7 +7,7 @@ const getCategories = async (req = request, res = response) => {
   const todos = await Categorie.countDocuments(query);
 
   res.status(200).json({
-    todos,
+    total:todos,
     data: categories,
   });
 };

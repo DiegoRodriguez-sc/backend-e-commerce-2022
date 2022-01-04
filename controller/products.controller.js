@@ -1,98 +1,91 @@
-const { response } = require('express');
-const { Product } = require('../models/product');
+const { response } = require("express");
+const { Product } = require("../models/product");
 
+const getProducts = async (req, res = response) => {
+  const query = { state: true };
 
-const getProducts = async(req, res = response ) => {
+  const [total, productos] = await Promise.all([
+    Product.countDocuments(query),
+    Product.find(query).populate("user", "name").populate("category", "name"),
+  ]);
 
-    const { limite = 5, desde = 0 } = req.query;
-    const query = { estado: true };
+  res.status(200).json({
+    total,
+    data: productos,
+  });
+};
 
-    const [ total, productos ] = await Promise.all([
-        Product.countDocuments(query),
-        Product.find(query)
-            .populate('user', 'name')
-            .populate('category', 'name')
-            .skip( Number( desde ) )
-            .limit(Number( limite ))
-    ]);
+const getProductId = async (req, res = response) => {
+  const { id } = req.params;
+  const product = await Product.findById(id)
+    .populate("user", "name")
+    .populate("category", "name");
 
-    res.json({
-        total,
-        productos
+  res.status(200).json(product);
+};
+
+const postProduct = async (req, res = response) => {
+  const { state, user, ...body } = req.body;
+
+  const productoDB = await Product.findOne({ name: body.name });
+
+  if (productoDB) {
+    return res.status(400).json({
+      msg: `El producto ${productoDB.name}, ya existe`,
     });
-}
+  }
 
-const obtenerProducto = async(req, res = response ) => {
+  const data = {
+    ...body,
+    name: body.name.toUpperCase(),
+    user: req.user._id,
+  };
 
-    const { id } = req.params;
-    const producto = await Producto.findById( id )
-                            .populate('usuario', 'nombre')
-                            .populate('categoria', 'nombre');
+  const product = new Product(data);
+  await product.save();
 
-    res.json( producto );
+  res.status(201).json({
+    msg: "Producto creado",
+    product,
+  });
+};
 
-}
+const putProduct = async (req, res = response) => {
+  const { id } = req.params;
+  const { state, user, ...data } = req.body;
 
-const crearProducto = async(req, res = response ) => {
+  if (data.name) {
+    data.name = data.name.toUpperCase();
+  }
 
-    const { estado, usuario, ...body } = req.body;
+  data.user = req.user._id;
 
-    const productoDB = await Producto.findOne({ nombre: body.nombre });
+  const product = await Product.findByIdAndUpdate(id, data, { new: true });
 
-    if ( productoDB ) {
-        return res.status(400).json({
-            msg: `El producto ${ productoDB.nombre }, ya existe`
-        });
-    }
+  res.status(201).json({
+    msg: "Producto actualizado",
+    product,
+  });
+};
 
-    // Generar la data a guardar
-    const data = {
-        ...body,
-        nombre: body.nombre.toUpperCase(),
-        usuario: req.usuario._id
-    }
+const deleteProduct = async (req, res = response) => {
+  const { id } = req.params;
+  const productoBorrado = await Product.findByIdAndUpdate(
+    id,
+    { state: false },
+    { new: true }
+  );
 
-    const producto = new Producto( data );
-
-    // Guardar DB
-    await producto.save();
-
-    res.status(201).json(producto);
-
-}
-
-const actualizarProducto = async( req, res = response ) => {
-
-    const { id } = req.params;
-    const { estado, usuario, ...data } = req.body;
-
-    if( data.nombre ) {
-        data.nombre  = data.nombre.toUpperCase();
-    }
-
-    data.usuario = req.usuario._id;
-
-    const producto = await Producto.findByIdAndUpdate(id, data, { new: true });
-
-    res.json( producto );
-
-}
-
-const borrarProducto = async(req, res = response ) => {
-
-    const { id } = req.params;
-    const productoBorrado = await Producto.findByIdAndUpdate( id, { estado: false }, {new: true });
-
-    res.json( productoBorrado );
-}
-
-
-
+  res.status(200).json({
+    msg: "Producto borrado",
+    productoBorrado,
+  });
+};
 
 module.exports = {
-    crearProducto,
-    obtenerProductos,
-    obtenerProducto,
-    actualizarProducto,
-    borrarProducto
-}
+  getProducts,
+  getProductId,
+  postProduct,
+  putProduct,
+  deleteProduct,
+};

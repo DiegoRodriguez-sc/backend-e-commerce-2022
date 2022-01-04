@@ -1,17 +1,17 @@
 const { response } = require('express');
-const { Producto } = require('../models');
+const { Product } = require('../models/product');
 
 
-const obtenerProductos = async(req, res = response ) => {
+const getProducts = async(req, res = response ) => {
 
     const { limite = 5, desde = 0 } = req.query;
     const query = { estado: true };
 
     const [ total, productos ] = await Promise.all([
-        Producto.countDocuments(query),
-        Producto.find(query)
-            .populate('usuario', 'nombre')
-            .populate('categoria', 'nombre')
+        Product.countDocuments(query),
+        Product.find(query)
+            .populate('user', 'name')
+            .populate('category', 'name')
             .skip( Number( desde ) )
             .limit(Number( limite ))
     ]);

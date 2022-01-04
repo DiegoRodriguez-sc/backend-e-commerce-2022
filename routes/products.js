@@ -1,57 +1,49 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { validarJWT, validarCampos, esAdminRole } = require('../middlewares');
 
-const { crearProducto,
-        obtenerProductos,
-        obtenerProducto,
-        actualizarProducto, 
-        borrarProducto } = require('../controllers/productos');
-
-const { existeCategoriaPorId, existeProductoPorId } = require('../helpers/db-validators');
+const { validateData } = require('../middlewares/validateData');
+const { validateJwt } = require('../middlewares/validateJwt');
+const { validateRol } = require('../middlewares/validateRol');
 
 const router = Router();
 
-/**
- * {{url}}/api/categorias
- */
-
 //  Obtener todas las categorias - publico
-router.get('/', obtenerProductos );
+router.get('/',  );
 
 // Obtener una categoria por id - publico
 router.get('/:id',[
     check('id', 'No es un id de Mongo válido').isMongoId(),
-    check('id').custom( existeProductoPorId ),
-    validarCampos,
-], obtenerProducto );
+    check('id').custom(  ),
+    validateData,
+],  );
 
 // Crear categoria - privado - cualquier persona con un token válido
 router.post('/', [ 
-    validarJWT,
-    check('nombre','El nombre es obligatorio').not().isEmpty(),
-    check('categoria','No es un id de Mongo').isMongoId(),
-    check('categoria').custom( existeCategoriaPorId ),
-    validarCampos
-], crearProducto );
+    validateJwt,
+    validateRol,
+    check('name','El nombre es obligatorio').not().isEmpty(),
+    check('category','No es un id de Mongo').isMongoId(),
+    validateData
+],  );
 
 // Actualizar - privado - cualquiera con token válido
 router.put('/:id',[
-    validarJWT,
-    // check('categoria','No es un id de Mongo').isMongoId(),
-    check('id').custom( existeProductoPorId ),
-    validarCampos
-], actualizarProducto );
+    validateJwt,
+    validateRol,
+    check('category','No es un id de Mongo').isMongoId(),
+    check('id').custom(  ),
+    validateData
+],  );
 
 // Borrar una categoria - Admin
 router.delete('/:id',[
-    validarJWT,
-    esAdminRole,
+    validateJwt,
+    validateRol,
     check('id', 'No es un id de Mongo válido').isMongoId(),
-    check('id').custom( existeProductoPorId ),
-    validarCampos,
-], borrarProducto);
+    check('id').custom(  ),
+    validateData,
+], );
 
 
 module.exports = router;

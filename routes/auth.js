@@ -3,7 +3,6 @@ const { check } = require("express-validator");
 const {
   login,
   register,
-  revalidarTWJ,
 } = require("../controller/auth.controller");
 const { validateData } = require("../middlewares/validateData");
 const { validateJwt } = require("../middlewares/validateJwt");

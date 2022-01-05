@@ -1,17 +1,16 @@
 const { response } = require("express");
-const { Product } = require("../models/product");
+const Product = require("../models/product");
+
 
 const getProducts = async (req, res = response) => {
   const query = { state: true };
+  const product = await Product.find(query).populate("user", "name").populate("category", "name");
+  const total = await Product.countDocuments(query);
 
-  const [total, productos] = await Promise.all([
-    Product.countDocuments(query),
-    Product.find(query).populate("user", "name").populate("category", "name"),
-  ]);
 
   res.status(200).json({
     total,
-    data: productos,
+    data: product,
   });
 };
 

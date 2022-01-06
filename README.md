@@ -305,7 +305,7 @@ https://backend-e-commerce-2022.herokuapp.com/api
 
 #### By name
 
-* Endpoint ``/products/productname``
+* Endpoint ``/search/products/productname``
 * Response
 ```js
     "results": [
@@ -339,7 +339,7 @@ https://backend-e-commerce-2022.herokuapp.com/api
 ```
  
 #### By category
-* Endpoint ``/categories/categoryID``
+* Endpoint ``/search/categories/categoryID``
 
 * Response 
 ```js

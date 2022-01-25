@@ -14,6 +14,10 @@ const CategorieSchema = Schema({
     ref: "User",
     required: true,
   },
+  img :{
+    type: String,
+    default : null
+  }
 });
 
 CategorieSchema.methods.toJSON = function() {

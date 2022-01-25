@@ -34,6 +34,7 @@ const postCategories = async (req = request, res = response) => {
 
   const data = {
     name,
+    img:req.body.img,
     user: req.user._id,
   };
 

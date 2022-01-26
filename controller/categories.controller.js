@@ -49,10 +49,11 @@ const postCategories = async (req = request, res = response) => {
 
 const putCategories = async (req = request, res = response) => {
   const name = req.body.name.toUpperCase();
+  const img = req.body.img;
   const { id } = req.params;
   const categorie = await Categorie.findByIdAndUpdate(
     id,
-    { name },
+    { name, img },
     { new: true }
   );
 

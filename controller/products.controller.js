@@ -1,7 +1,6 @@
 const { response } = require("express");
 const Product = require("../models/product");
 
-
 const getProducts = async (req, res = response) => {
   const query = { state: true };
   const product = await Product.find(query).populate("user", "name").populate("category", "name");
@@ -24,9 +23,8 @@ const getProductId = async (req, res = response) => {
 };
 
 const postProduct = async (req, res = response) => {
-  const { state, user, ...body } = req.body;
-
-  const productoDB = await Product.findOne({ name: body.name });
+  const { state, user,...body } = req.body;
+  const productoDB = await Product.findOne({name:body.name.toUpperCase()}).exec();
 
   if (productoDB) {
     return res.status(400).json({

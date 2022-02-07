@@ -15,6 +15,16 @@ const postOrder = async (req, res) => {
   }
 };
 
+
+const getOrder = async (req, res) => {
+ const { id } = req.params;
+ const order = await Order.findById(id);
+ res.status(200).send({ data: order });
+};
+
+
+
 module.exports = {
   postOrder,
+  getOrder
 };

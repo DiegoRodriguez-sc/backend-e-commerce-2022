@@ -1,7 +1,7 @@
 const Categorie = require("../models/categorie");
 const User = require("../models/user");
 const Product = require("../models/product");
-
+const Order = require("../models/order");
 //verify user email
 const emailExists = async (email = "") => {
   const mail = await User.findOne({ email });
@@ -34,11 +34,20 @@ const idProductExists = async (id) => {
   }
 };
 
+//verify order id
+const idOrderExists = async (id) => {
+  const idOrder = await Order.findById(id);
+  if (!idOrder) {
+    throw new Error(`El id: ${id} no existe`);
+  }
+};
+
 
 
 module.exports = {
   emailExists,
   idUserExists,
   idCategorieExists,
-  idProductExists
+  idProductExists,
+  idOrderExists
 };

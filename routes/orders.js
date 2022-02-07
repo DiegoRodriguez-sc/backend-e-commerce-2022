@@ -1,6 +1,7 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
-const { postOrder } = require("../controller/orders.controller");
+const { postOrder, getOrder } = require("../controller/orders.controller");
+const { idOrderExists } = require("../helpers/db_validators");
 const { validateData } = require("../middlewares/validateData");
 const { validateJwt } = require("../middlewares/validateJwt");
 
@@ -13,5 +14,10 @@ router.post("/", [
   validateData,
 ], postOrder);
 
+router.get("/:id", [
+  check("id", "No es un id de Mongo válido").isMongoId(),
+  check("id").custom(idOrderExists),
+  validateData,
+], getOrder);
 
 module.exports = router;

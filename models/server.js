@@ -12,6 +12,7 @@ class Server {
       products: "/api/products",
       search: "/api/search",
       users: "/api/users",
+      order: "/api/order"
     };
 
     //base de datos
@@ -43,6 +44,7 @@ class Server {
     this.app.use(this.path.products, require("../routes/products"));
     this.app.use(this.path.search, require("../routes/search"));
     this.app.use(this.path.users, require("../routes/users"));
+    this.app.use(this.path.order, require("../routes/orders"));
   }
 
   listen() {

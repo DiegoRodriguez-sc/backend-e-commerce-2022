@@ -1,4 +1,4 @@
-const { generatePaymentIntent } = require("../helpers/stripe");
+const { generatePaymentIntent, getPaymentDetail } = require("../helpers/stripe");
 const Order = require("../models/order");
 
 const postOrder = async (req, res) => {
@@ -53,9 +53,30 @@ const updateOrder = async (req, res) => {
 };
 
 
+//TODO: confirmamos orden de pago con el status
+const checkOrder = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const order = await Order.findById(id);
+    const detailStripe = await getPaymentDetail(order.stripeId);
+
+    const status = detailStripe.status.includes("succe") ? "success" : "fail";
+
+    await Order.findByIdAndUpdate(id, { status });
+
+    res.send({ data: detailStripe });
+  } catch (e) {
+    console.log(e.message);
+    res.status(500);
+    res.send({ error: "Algo ocurrio" });
+  }
+};
+
 
 module.exports = {
   postOrder,
   getOrder,
-  updateOrder
+  updateOrder,
+  checkOrder
 };
